@@ -171,7 +171,6 @@ public class ServerCon implements Runnable {
 			parent.wyrzucBlad(e);
 		}
 				
-
 		return 0;
 	}
 
