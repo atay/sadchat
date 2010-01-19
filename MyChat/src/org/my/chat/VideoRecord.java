@@ -35,6 +35,10 @@ public class VideoRecord implements CommandListener {
 			video.start();
 			
 		} else if (c == backCommand) {
+			if(player!=null)
+				player.close();
+			player = null;
+			videoControl = null;
 			parent.display.setCurrent(parent.fchat);
 		
 		} else if (c == sendCommand) {
