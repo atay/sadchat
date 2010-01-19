@@ -22,6 +22,7 @@ public class AudioStringItem extends ChatStringItem implements
 		this.audioFile = audioFile;
 		this.addCommand(playCommand);
 		this.setItemCommandListener(this);
+		this.commandAction(playCommand, this);
 	}
 
 	public void commandAction(Command c, Item item) {
