@@ -100,7 +100,6 @@ public class ServerCon implements Runnable {
 			parent.wyrzucBlad(e);
 
 		} finally {
-			parent.textOff();
 			try {
 				if (is != null) {
 					is.close();
