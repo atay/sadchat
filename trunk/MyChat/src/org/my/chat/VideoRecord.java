@@ -39,6 +39,7 @@ public class VideoRecord implements CommandListener {
 		
 		} else if (c == sendCommand) {
 			WyslijZdjecie(photo);
+			showCamera();
 			
 		} else if (c == cancelCommand) {
 			showCamera();
