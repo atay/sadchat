@@ -72,13 +72,17 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 	}
 
 	public void wyslijDzwiek(byte[] tab) {
+		bTextOn = false;
 		watek.wyslijDzwiek(tab);
+		bTextOn = true;
 
 	}
 	
 	public void wyslijZdjecie(byte[] zdjecie)
 	{
+		bTextOn = false;
 		watek.wyslijZdjecie(zdjecie);
+		bTextOn = true;
 	}
 
 	public void pauseApp() {
@@ -102,10 +106,9 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		}
 		else if (tekst.startsWith("photo:")) {
 			int dlugosc = Integer.parseInt(tekst.substring("photo:".length()));
-			odebranoLinie("info: pobieranie pliku graficznego o dlugosci "+dlugosc);
+			odebranoLinie("info: getting photo ... "+dlugosc + " bytes");
 			watek.wylaczOdbieranie();
 			ByteArrayOutputStream photoFile=watek.pobierzDane(dlugosc);
-			odebranoLinie("info: odebrano plik graficzny o dlugosci "+dlugosc);
 			watek.wlaczOdbieranie();
 			
 			tekst = "Odebrano plik audio (" + dlugosc + ")";
