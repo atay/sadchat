@@ -24,7 +24,7 @@ public class VideoRecord implements CommandListener {
 		sendCommand = new Command("Send", Command.SCREEN, 3);
 		cancelCommand = new Command("Cancel", Command.CANCEL, 4);
 		form.setCommandListener(this);
-		display.setCurrent(form);
+
 		
 	}
 
