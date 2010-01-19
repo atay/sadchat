@@ -137,10 +137,7 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 			display.vibrate(100);
 		if (opcje.isSelected(1))
 			display.flashBacklight(100);
-		if (bTextOn)
-			fchat.insert(fchat.size()-1, newsi);
-		else
-			fchat.append(newsi);
+		fchat.insert(fchat.size()-1, newsi);
 		
 		
 	}
@@ -174,7 +171,7 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 
 		else if (c == sendCommand) {
 			String tekst = it.getString();
-			if (tekst.length() == 0)
+			if (tekst.length() == 0 || !bTextOn)
 				return;
 
 			Thread send = new Thread(new Runnable() {
@@ -225,6 +222,7 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		si = new StringItem("Chat:", " ");
 		it = new TextField("", "", 200, 0);
 		fchat.append(si);
+		fchat.append(it);
 		
 		fchat.addCommand(voiceCommand);
 		fchat.addCommand(sendCommand);
@@ -246,16 +244,14 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		this.textOff();
 	}
 	public void textOn(){
-		if (!bTextOn){
-			fchat.append(it);
+		if (!bTextOn)
 			bTextOn=true;
-		}
+		
 	}
 	public void textOff(){
-		if (bTextOn){
-			fchat.delete(fchat.size()-1);
+		if (bTextOn)
 			bTextOn=false;
-		}
+		
 	}
 
 
