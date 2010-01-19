@@ -77,6 +77,7 @@ public class ServerCon implements Runnable {
 			os = sc.openOutputStream();
 
 			is = sc.openInputStream();
+			
 
 			int c = 0;
 
@@ -123,7 +124,7 @@ public class ServerCon implements Runnable {
 	}
 
 	public int wyslijDzwiek(byte[] tab) {
-		parent.odebranoLinie("info: start sending audio " + tab.length + " bytes ... wait");
+		parent.odebranoLinie("info: sending audio ... wait");
 		wyslijTekst("audio:" + tab.length + "\n");
 
 		try {
@@ -134,13 +135,13 @@ public class ServerCon implements Runnable {
 		} catch (IOException e) {
 			parent.wyrzucBlad(e);
 		}
-		parent.odebranoLinie("info: !! audio sent");
+		parent.odebranoLinie("info: audio file sent");
 		return 0;
 	}
 
 	public void wyslijZdjecie(byte[] tab) {
 		
-		parent.odebranoLinie("info: start sending photo " + tab.length + " bytes ... wait");
+		parent.odebranoLinie("info: sending photo ... wait");
 		wyslijTekst("photo:" + tab.length + "\n");
 		try {
 			for (int i = 0; i < tab.length; i++)
@@ -150,20 +151,22 @@ public class ServerCon implements Runnable {
 		} catch (IOException e) {
 			parent.wyrzucBlad(e);
 		}
-		parent.odebranoLinie("info: !! photo sent");
+		parent.odebranoLinie("info: photo file sent");
 		
 	}
 
 	public int wyslijTekst(String tekst) {
 
-		for (int i = 0; i < tekst.length(); i++)
-			try {
-				os.write(tekst.charAt(i));
-				os.flush();
-			} catch (IOException e) {
-				parent.wyrzucBlad(e);
-
-			}
+		ByteArrayOutputStream bs = new ByteArrayOutputStream();
+		DataOutputStream dos = new DataOutputStream(bs);
+		try {
+			dos.writeUTF(tekst);
+			os.write(bs.toByteArray());
+			os.flush();
+		} catch (IOException e) {
+			parent.wyrzucBlad(e);
+		}
+				
 
 		return 0;
 	}

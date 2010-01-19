@@ -1,6 +1,8 @@
 package org.my.chat;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 
 import javax.microedition.midlet.*;
@@ -90,6 +92,8 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 
 	
 	public void odebranoLinie(String tekst) {
+		
+		
 		ChatStringItem newsi=null;		
 		if (tekst.startsWith("nick:")) {
 			String nick = tekst.substring("nick:".length());
