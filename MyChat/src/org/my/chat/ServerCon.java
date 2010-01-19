@@ -69,6 +69,9 @@ public class ServerCon implements Runnable {
 				sc = (SocketConnection) ssc.acceptAndOpen();
 
 			} else {
+				parent.odebranoLinie("info:Łączenie z: "
+						+ adres);
+
 				sc = (SocketConnection) Connector.open("socket://" + adres
 						+ ":12341");
 			}
