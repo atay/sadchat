@@ -38,7 +38,15 @@ public class VideoRecord implements CommandListener {
 			parent.display.setCurrent(parent.fchat);
 		
 		} else if (c == sendCommand) {
-			WyslijZdjecie(photo);
+			
+			Thread send = new Thread(new Runnable() {
+				public void run() {
+					WyslijZdjecie(photo);
+					}
+			});
+			send.start();
+
+
 			showCamera();
 			
 		} else if (c == cancelCommand) {
