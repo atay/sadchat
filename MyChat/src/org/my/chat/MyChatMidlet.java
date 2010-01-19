@@ -25,8 +25,8 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 	private Command connectCommand = new Command("Connect", Command.SCREEN, 0);
 	private Command sendCommand = new Command("Send", Command.ITEM, 0);
 	private Command abortCommand = new Command("Abort", Command.CANCEL, 1);
-	private Command changeCommand = new Command("Voice", Command.ITEM, 1);
-	private Command videoCommand = new Command("Video", Command.ITEM, 1);
+	private Command changeCommand = new Command("Voice", Command.SCREEN, 1);
+	private Command videoCommand = new Command("Video", Command.SCREEN, 1);
 
 	public MyChatMidlet() {
 		videoRecord = new VideoRecord(this);
@@ -101,7 +101,7 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 			String corobi = tekst.substring("/me ".length());
 			tekst = rozmowca + " " + corobi;
 		} else {
-			tekst = "<" + rozmowca + ">" + tekst + "\n";
+			tekst = "<" + rozmowca + ">" + tekst;
 
 		}
 		if (newsi==null){
@@ -117,9 +117,8 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 
 	}
 	public void echoMojejWypowiedzi(String wypowiedz) {
-		wypowiedz = "<" + nick.getString() + ">" + wypowiedz + "\n";
-		StringItem newsi = new StringItem(null, wypowiedz);
-		//newsi.setLayout(StringItem.LAYOUT_EXPAND);
+		wypowiedz = "<" + nick.getString() + ">" + wypowiedz;
+		ChatStringItem newsi = new TextStringItem(wypowiedz);
 		fchat.insert(fchat.size()-1, newsi);
 
 	}
@@ -190,9 +189,7 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 
 		fchat = new Form("Chat client");
 		si = new StringItem("Chat:", " ");
-		TextField iit = new TextField("", "", 200, 0);
 		it = new TextField("", "", 200, 0);
-		fchat.append(iit);
 		fchat.append(si);
 		fchat.append(it);
 		fchat.addCommand(changeCommand);
