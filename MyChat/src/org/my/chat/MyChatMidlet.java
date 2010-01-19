@@ -24,7 +24,7 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 	private VideoRecord videoRecord;
 	StringBuffer sb;
 	public Command exitCommand = new Command("Exit", Command.EXIT, 1);
-	private Command connectCommand = new Command("Connect", Command.SCREEN, 0);
+	private Command connectCommand = new Command("Connect", Command.ITEM, 0);
 	private Command sendCommand = new Command("Send", Command.ITEM, 0);
 	private Command abortCommand = new Command("Abort", Command.CANCEL, 1);
 	private Command voiceCommand = new Command("Voice", Command.SCREEN, 1);
@@ -50,9 +50,13 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		opcje = new ChoiceGroup("Opcje", Choice.MULTIPLE, new String[] {
 				"alarm wibracyjny", "podświetl ekran" }, null);
 
+		opcje.setSelectedIndex(0, true);
+
+
+		fopt.append(tryb);
 		fopt.append(adres);
 		fopt.append(nick);
-		fopt.append(tryb);
+		
 		fopt.append(opcje);
 		display.setCurrent(fopt);
 
@@ -162,7 +166,7 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 	}
 
 	public void commandAction(Command c, Displayable s) {
-
+		
 		if (c == exitCommand) {
 			destroyApp(true);
 			notifyDestroyed();
