@@ -6,7 +6,8 @@ import javax.microedition.lcdui.StringItem;
 public class ChatStringItem extends StringItem{
 
 	public ChatStringItem(String label, String text) {
-		super(text,null);
+		super(null,text);
+		this.setLayout(StringItem.LAYOUT_NEWLINE_AFTER | StringItem.LAYOUT_2);
 
 	}
 

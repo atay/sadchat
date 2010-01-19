@@ -38,7 +38,7 @@ public class VoiceRecord implements CommandListener {
 		messageItem = new StringItem("Record",
 				"Click record to start recording.");
 		fwalkie.append(messageItem);
-		errorItem = new StringItem("Actual filesize", "");
+		errorItem = new StringItem("", "");
 
 		fwalkie.append(errorItem);
 		recordCommand = new Command("Record", Command.SCREEN, 1);
@@ -83,6 +83,7 @@ public class VoiceRecord implements CommandListener {
 				fwalkie.removeCommand(sendCommand);
 				fwalkie.addCommand(recordCommand);
 				fwalkie.addCommand(backCommand);
+				messageItem.setText("recording canceled");
 			} catch (IOException e) {
 				errorItem.setLabel("Error");
 				errorItem.setText(e.toString());
@@ -93,7 +94,7 @@ public class VoiceRecord implements CommandListener {
 			try {
 				rc.commit();
 				recordedSoundArray = output.toByteArray();
-				messageItem.setText("done!" + recordedSoundArray.length);
+				messageItem.setText("sent " + recordedSoundArray.length + " bytes");
 				p.close();
 				fwalkie.removeCommand(sendCommand);
 				fwalkie.removeCommand(cancelCommand);

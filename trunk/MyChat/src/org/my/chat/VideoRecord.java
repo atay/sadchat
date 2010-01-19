@@ -3,45 +3,51 @@ package org.my.chat;
 import java.io.IOException;
 import javax.microedition.lcdui.*;
 import javax.microedition.media.*;
-import javax.microedition.media.control.*;
-import javax.microedition.midlet.MIDlet;
 import javax.microedition.media.control.VideoControl;
 
 public class VideoRecord implements CommandListener {
 	private Display display;
 	private Form form;
 	private MyChatMidlet parent;
-	private Command exit, back, capture, camera;
 	private Player player;
 	private VideoControl videoControl;
 	private Video video;
+	private Command captureCommand, sendCommand, cancelCommand, backCommand;
+	private byte[] photo;
 
 	public VideoRecord(MyChatMidlet mid) {
 		this.parent=mid;
 		display = Display.getDisplay(this.parent);
 		form = new Form("Capture Video");
-		exit = new Command("Exit", Command.EXIT, 0);
-		camera = new Command("Camera", Command.SCREEN, 1);
-		back = new Command("Back", Command.BACK, 2);
-		capture = new Command("Capture", Command.SCREEN, 3);
-		form.addCommand(camera);
-		form.addCommand(back);
+		backCommand = new Command("Back to chat", Command.EXIT, 4);
+		captureCommand = new Command("Capture", Command.SCREEN, 1);
+		sendCommand = new Command("Send", Command.SCREEN, 3);
+		cancelCommand = new Command("Cancel", Command.CANCEL, 4);
 		form.setCommandListener(this);
 		display.setCurrent(form);
+		
 	}
 
 	public void commandAction(Command c, Displayable s) {
-		String label = c.getLabel();
-		if (label.equals("Exit")) {
-			parent.display.setCurrent(parent.fchat);
-		} else if (label.equals("Camera")) {
-			showCamera();
-		} else if (label.equals("Back"))
-			parent.display.setCurrent(parent.fchat);
-		else if (label.equals("Capture")) {
+		
+		if (c == captureCommand) {
 			video = new Video(this);
 			video.start();
+			
+		} else if (c == backCommand) {
+			parent.display.setCurrent(parent.fchat);
+		
+		} else if (c == sendCommand) {
+			WyslijZdjecie(photo);
+			
+		} else if (c == cancelCommand) {
+			showCamera();
 		}
+	}
+	
+	public void WyslijZdjecie(byte[] zdjecie)
+	{
+		parent.wyslijZdjecie(zdjecie);
 	}
 
 	public void showCamera() {
@@ -50,8 +56,8 @@ public class VideoRecord implements CommandListener {
 			player.realize();
 			videoControl = (VideoControl) player.getControl("VideoControl");
 			Canvas canvas = new VideoCanvas(this, videoControl);
-			canvas.addCommand(back);
-			canvas.addCommand(capture);
+			canvas.addCommand(backCommand);
+			canvas.addCommand(captureCommand);
 			canvas.setCommandListener(this);
 			display.setCurrent(canvas);
 			player.start();
@@ -73,9 +79,14 @@ public class VideoRecord implements CommandListener {
 
 		public void captureVideo() {
 			try {
-				byte[] photo = videoControl.getSnapshot(null);
+				photo = videoControl.getSnapshot(null);
+				
 				Image image = Image.createImage(photo, 0, photo.length);
+
+				form.deleteAll();
 				form.append(image);
+				form.addCommand(sendCommand);
+				form.addCommand(cancelCommand);
 				display.setCurrent(form);
 				player.close();
 				player = null;
@@ -96,19 +107,14 @@ class VideoCanvas extends Canvas {
 
 		videoControl.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, this);
 		try {
-			videoControl.setDisplayLocation(2, 2);
-			videoControl.setDisplaySize(width - 4, height - 4);
+			videoControl.setDisplayLocation(0, 0);
+			videoControl.setDisplaySize(width, height);
 		} catch (MediaException me) {
 		}
 		videoControl.setVisible(true);
 	}
 
 	public void paint(Graphics g) {
-		int width = getWidth();
-		int height = getHeight();
 
-		g.setColor(255, 0, 0);
-		g.drawRect(0, 0, width - 1, height - 1);
-		g.drawRect(1, 1, width - 3, height - 3);
 	}
 }

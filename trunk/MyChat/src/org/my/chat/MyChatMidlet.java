@@ -1,6 +1,7 @@
 package org.my.chat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import javax.microedition.midlet.*;
 import javax.microedition.lcdui.*;
@@ -11,11 +12,12 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 	public static Display display;
 	public Form fopt, fwait, fchat, ffailed;
 	public TextField it;
-	private StringItem si;
+	public StringItem si, errorItem ;
 	public TextField adres, nick;
 	public ChoiceGroup tryb;
 	private ChoiceGroup opcje;
 	boolean newline = true;
+	private boolean bTextOn=false;
 	private ServerCon watek;
 	private String rozmowca = "??";
 
@@ -25,11 +27,14 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 	private Command connectCommand = new Command("Connect", Command.SCREEN, 0);
 	private Command sendCommand = new Command("Send", Command.ITEM, 0);
 	private Command abortCommand = new Command("Abort", Command.CANCEL, 1);
-	private Command changeCommand = new Command("Voice", Command.SCREEN, 1);
+	private Command voiceCommand = new Command("Voice", Command.SCREEN, 1);
 	private Command videoCommand = new Command("Video", Command.SCREEN, 1);
+	private Command reconnectCommand = new Command("New connection", Command.SCREEN, 1);
+	private Command disconnectCommand = new Command("Disconnect", Command.SCREEN, 4);
 
 	public MyChatMidlet() {
-		videoRecord = new VideoRecord(this);
+		
+		
 		sb = new StringBuffer();
 		display = Display.getDisplay(this);
 		fopt = new Form("Time Demo");
@@ -66,34 +71,48 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		watek.wyslijDzwiek(tab);
 
 	}
+	
+	public void wyslijZdjecie(byte[] zdjecie)
+	{
+		watek.wyslijZdjecie(zdjecie);
+	}
 
 	public void pauseApp() {
 	}
 
-	public void oczekujePolaczenie(String adres, int i) {
-		fwait = new Form("Chat client");
-		si = new StringItem("Serwer gotowy", "Oczekuje: " + adres + ":" + i);
-		fwait.append(si);
-		display.setCurrent(fwait);
-
-	}
-
-	public void odebranoLinie(StringBuffer str) {
+	
+	public void odebranoLinie(String tekst) {
 		ChatStringItem newsi=null;		
-		String tekst = str.toString();
-		if (tekst.startsWith("login:")) {
-			String nick = tekst.substring("login:".length());
+		if (tekst.startsWith("nick:")) {
+			String nick = tekst.substring("nick:".length());
 			tekst = rozmowca + " zmienil nick na " + nick;
 			rozmowca = nick;
 		}
-		if (tekst.startsWith("audio:")) {
+		else if (tekst.startsWith("audio:")) {
 			int dlugosc = Integer.parseInt(tekst.substring("audio:".length()));
 			watek.wylaczOdbieranie();
-			ByteArrayOutputStream audioFile=watek.pobierzDzwiek(dlugosc);
+			ByteArrayOutputStream audioFile=watek.pobierzDane(dlugosc);
 			watek.wlaczOdbieranie();
 			tekst = "Odebrano plik audio (" + dlugosc + ")";
 			newsi = new AudioStringItem(tekst, audioFile);
-
+		}
+		else if (tekst.startsWith("photo:")) {
+			int dlugosc = Integer.parseInt(tekst.substring("photo:".length()));
+			watek.wylaczOdbieranie();
+			ByteArrayOutputStream photoFile=watek.pobierzDane(dlugosc);
+			watek.wlaczOdbieranie();
+			tekst = "Odebrano plik audio (" + dlugosc + ")";
+			newsi = new PhotoStringItem(tekst, photoFile, this);
+		}
+		else if (tekst.startsWith("error:"))
+		{
+			String blad = tekst.substring("error:".length());
+			tekst="Wystąpił błąd: "+blad;
+			
+		}
+		else if (tekst.startsWith("info:"))
+		{
+			tekst = tekst.substring("info:".length());
 
 		}
 
@@ -107,12 +126,20 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		if (newsi==null){
 			newsi = new TextStringItem(tekst);
 		}
-		//newsi.setLayout(StringItem.LAYOUT_EXPAND);
 		if (opcje.isSelected(0))
 			display.vibrate(100);
 		if (opcje.isSelected(1))
 			display.flashBacklight(100);
-		fchat.insert(fchat.size()-1, newsi);
+		if (bTextOn)
+			fchat.insert(fchat.size()-1, newsi);
+		else
+			fchat.insert(fchat.size(), newsi);
+		
+		
+	}
+
+	public void odebranoLinie(StringBuffer str) {
+		odebranoLinie(str.toString());
 		
 
 	}
@@ -120,7 +147,6 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		wypowiedz = "<" + nick.getString() + ">" + wypowiedz;
 		ChatStringItem newsi = new TextStringItem(wypowiedz);
 		fchat.insert(fchat.size()-1, newsi);
-
 	}
 
 	public void destroyApp(boolean unconditional) {
@@ -139,7 +165,7 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 			notifyDestroyed();
 		}
 
-		if (c == sendCommand) {
+		else if (c == sendCommand) {
 			String tekst = it.getString();
 			if (tekst.length() == 0)
 				return;
@@ -155,32 +181,33 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 
 		}
 
-		if (c == connectCommand) {
+		else if (c == connectCommand) {
 
 			watek = new ServerCon(this, adres.getString());
 			watek.start();
-			fwait = new Form("Chat client");
-			si = new StringItem("", "Łączenie w trakcie");
-			fwait.addCommand(abortCommand);
-			fwait.append(si);
-			fwait.setCommandListener(this);
-			display.setCurrent(fwait);
 
 		}
 
-		if (c == abortCommand) {
+		else if (c == abortCommand) {
 
 			pokazKomunikat("Przerwano probe polaczenia");
 			display.setCurrent(fopt);
 
 		}
 
-		if (c == changeCommand) {
+		else if (c == voiceCommand) {
 			VoiceRecord vr= new VoiceRecord(this);
 			vr.MainForm();
 		}
-		if (c == videoCommand){
+		else if (c == videoCommand){
+			VideoRecord videoRecord = new VideoRecord(this);
 			videoRecord.showCamera();
+		}
+		else if (c == reconnectCommand){
+			MyChatMidlet.display.setCurrent(fopt);
+		}
+		else if (c == disconnectCommand){
+			watek.stop();
 		}
 
 	}
@@ -191,12 +218,38 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		si = new StringItem("Chat:", " ");
 		it = new TextField("", "", 200, 0);
 		fchat.append(si);
-		fchat.append(it);
-		fchat.addCommand(changeCommand);
+		
+		
+		fchat.addCommand(voiceCommand);
 		fchat.addCommand(sendCommand);
 		fchat.addCommand(videoCommand);
+		fchat.addCommand(disconnectCommand);
+		fchat.addCommand(exitCommand);
 		fchat.setCommandListener(this);
 		display.setCurrent(fchat);
 
 	}
+
+	public void wyrzucBlad(IOException e) {
+		odebranoLinie(new StringBuffer("error:"+e.getMessage()+ " z klasy " + e.getClass().getName()));
+		fchat.removeCommand(sendCommand);
+		fchat.removeCommand(videoCommand);
+		fchat.removeCommand(voiceCommand);
+		fchat.removeCommand(disconnectCommand);
+		fchat.addCommand(reconnectCommand);
+	}
+	public void textOn(){
+		if (!bTextOn){
+			fchat.append(it);
+			bTextOn=true;
+		}
+	}
+	public void textOff(){
+		if (bTextOn){
+			fchat.delete(fchat.size());
+			bTextOn=false;
+		}
+	}
+
+
 }
