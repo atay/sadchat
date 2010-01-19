@@ -123,6 +123,7 @@ public class ServerCon implements Runnable {
 	}
 
 	public int wyslijDzwiek(byte[] tab) {
+		parent.odebranoLinie("info: start sending audio " + tab.length + " bytes ... wait");
 		wyslijTekst("audio:" + tab.length + "\n");
 
 		try {
@@ -133,12 +134,13 @@ public class ServerCon implements Runnable {
 		} catch (IOException e) {
 			parent.wyrzucBlad(e);
 		}
-		parent.odebranoLinie("info: audio sent " + tab.length + " bytes");
+		parent.odebranoLinie("info: !! audio sent");
 		return 0;
 	}
 
 	public void wyslijZdjecie(byte[] tab) {
 		
+		parent.odebranoLinie("info: start sending photo " + tab.length + " bytes ... wait");
 		wyslijTekst("photo:" + tab.length + "\n");
 		try {
 			for (int i = 0; i < tab.length; i++)
@@ -148,7 +150,7 @@ public class ServerCon implements Runnable {
 		} catch (IOException e) {
 			parent.wyrzucBlad(e);
 		}
-		parent.odebranoLinie("info: photo sent " + tab.length + " bytes");
+		parent.odebranoLinie("info: !! photo sent");
 		
 	}
 
