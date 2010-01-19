@@ -80,7 +80,7 @@ public class ServerCon implements Runnable {
 			os = sc.openOutputStream();
 
 			is = sc.openInputStream();
-			
+			InputStreamReader r = new InputStreamReader(is,"utf-8");
 
 			int c = 0;
 
@@ -88,10 +88,11 @@ public class ServerCon implements Runnable {
 
 			StringBuffer bufor = new StringBuffer();
 
-			while ((c = is.read()) != '.' && (c != -1)) {
+			while ((c = r.read()) != '.' && (c != -1)) {
 				if (c != 10)
-					bufor.append((char) c);
+					bufor.append((char)c);
 				else {
+					//parent.odebranoLinie(new String(bufor.toString().getBytes(),"utf-8"));
 					parent.odebranoLinie(bufor);
 					bufor.delete(0, bufor.length());
 					while (!enable) {
@@ -160,14 +161,17 @@ public class ServerCon implements Runnable {
 
 	public int wyslijTekst(String tekst) {
 
-		for (int i = 0; i < tekst.length(); i++)
-			try {
-				os.write(tekst.charAt(i));
-				os.flush();
-			} catch (IOException e) {
-				parent.wyrzucBlad(e);
+		ByteArrayOutputStream bs = new ByteArrayOutputStream();
+		DataOutputStream dos = new DataOutputStream(bs);
+		try {
+			dos.writeUTF(tekst);
+			os.write(bs.toByteArray());
+			os.flush();
+		} catch (IOException e) {
+			parent.wyrzucBlad(e);
+		}
+				
 
-			}
 		return 0;
 	}
 
