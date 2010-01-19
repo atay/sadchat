@@ -13,10 +13,7 @@ public class TextStringItem extends ChatStringItem implements ItemCommandListene
 		super(null, text);
 	}
 
-
 	public void commandAction(Command c, Item item) {
-
-		
 	}
 
 
