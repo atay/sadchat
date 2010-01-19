@@ -100,7 +100,17 @@ public class VoiceRecord implements CommandListener {
 				fwalkie.removeCommand(cancelCommand);
 				fwalkie.addCommand(recordCommand);
 				fwalkie.addCommand(backCommand);
-				parent.wyslijDzwiek(recordedSoundArray);
+				
+				Thread send = new Thread(new Runnable() {
+					public void run() {
+						parent.wyslijDzwiek(recordedSoundArray);
+						}
+				});
+				send.start();
+
+				
+
+				
 			} catch (IOException e) {
 				errorItem.setLabel("Error");
 				errorItem.setText(e.toString());
