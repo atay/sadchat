@@ -98,9 +98,12 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		}
 		else if (tekst.startsWith("photo:")) {
 			int dlugosc = Integer.parseInt(tekst.substring("photo:".length()));
+			odebranoLinie("info: pobieranie pliku graficznego o dlugosci "+dlugosc);
 			watek.wylaczOdbieranie();
 			ByteArrayOutputStream photoFile=watek.pobierzDane(dlugosc);
+			odebranoLinie("info: odebrano plik graficzny o dlugosci "+dlugosc);
 			watek.wlaczOdbieranie();
+			
 			tekst = "Odebrano plik audio (" + dlugosc + ")";
 			newsi = new PhotoStringItem(tekst, photoFile, this);
 		}

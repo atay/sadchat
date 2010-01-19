@@ -140,7 +140,7 @@ public class ServerCon implements Runnable {
 
 	public void wyslijZdjecie(byte[] tab) {
 		
-		wyslijTekst("video:" + tab.length + "\n");
+		wyslijTekst("photo:" + tab.length + "\n");
 		try {
 			for (int i = 0; i < tab.length; i++)
 				os.write(tab[i]);
