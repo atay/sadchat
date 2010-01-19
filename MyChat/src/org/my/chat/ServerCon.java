@@ -157,17 +157,14 @@ public class ServerCon implements Runnable {
 
 	public int wyslijTekst(String tekst) {
 
-		ByteArrayOutputStream bs = new ByteArrayOutputStream();
-		DataOutputStream dos = new DataOutputStream(bs);
-		try {
-			dos.writeUTF(tekst);
-			os.write(bs.toByteArray());
-			os.flush();
-		} catch (IOException e) {
-			parent.wyrzucBlad(e);
-		}
-				
+		for (int i = 0; i < tekst.length(); i++)
+			try {
+				os.write(tekst.charAt(i));
+				os.flush();
+			} catch (IOException e) {
+				parent.wyrzucBlad(e);
 
+			}
 		return 0;
 	}
 
