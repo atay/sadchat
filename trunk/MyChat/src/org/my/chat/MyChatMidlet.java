@@ -140,7 +140,7 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		if (bTextOn)
 			fchat.insert(fchat.size()-1, newsi);
 		else
-			fchat.insert(fchat.size(), newsi);
+			fchat.append(newsi);
 		
 		
 	}
@@ -226,7 +226,6 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		it = new TextField("", "", 200, 0);
 		fchat.append(si);
 		
-		
 		fchat.addCommand(voiceCommand);
 		fchat.addCommand(sendCommand);
 		fchat.addCommand(videoCommand);
@@ -244,6 +243,7 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		fchat.removeCommand(voiceCommand);
 		fchat.removeCommand(disconnectCommand);
 		fchat.addCommand(reconnectCommand);
+		this.textOff();
 	}
 	public void textOn(){
 		if (!bTextOn){
@@ -253,7 +253,7 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 	}
 	public void textOff(){
 		if (bTextOn){
-			fchat.delete(fchat.size());
+			fchat.delete(fchat.size()-1);
 			bTextOn=false;
 		}
 	}
