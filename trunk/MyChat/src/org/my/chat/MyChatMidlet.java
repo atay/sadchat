@@ -59,7 +59,7 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		
 		fopt.append(opcje);
 		display.setCurrent(fopt);
-
+		videoRecord = new VideoRecord(this);
 	}
 
 	public void startApp() {
@@ -204,7 +204,6 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 			vr.MainForm();
 		}
 		else if (c == videoCommand){
-			VideoRecord videoRecord = new VideoRecord(this);
 			videoRecord.showCamera();
 		}
 		else if (c == reconnectCommand){
