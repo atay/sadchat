@@ -87,6 +87,11 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 		bTextOn = true;
 	}
 
+	public void czekajNaLinie()
+	{
+		while(!bTextOn);
+	}
+	
 	public void pauseApp() {
 	}
 

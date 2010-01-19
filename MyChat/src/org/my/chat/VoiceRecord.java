@@ -103,6 +103,7 @@ public class VoiceRecord implements CommandListener {
 				
 				Thread send = new Thread(new Runnable() {
 					public void run() {
+						parent.czekajNaLinie();
 						parent.wyslijDzwiek(recordedSoundArray);
 						}
 				});

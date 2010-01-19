@@ -45,6 +45,7 @@ public class VideoRecord implements CommandListener {
 			
 			Thread send = new Thread(new Runnable() {
 				public void run() {
+					parent.czekajNaLinie();
 					WyslijZdjecie(photo);
 					}
 			});
