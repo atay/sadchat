@@ -111,7 +111,7 @@ public class MyChatMidlet extends MIDlet implements CommandListener {
 			ByteArrayOutputStream photoFile=watek.pobierzDane(dlugosc);
 			watek.wlaczOdbieranie();
 			
-			tekst = "Odebrano plik audio (" + dlugosc + ")";
+			tekst = "Odebrano plik photo (" + dlugosc + ")";
 			newsi = new PhotoStringItem(tekst, photoFile, this);
 		}
 		else if (tekst.startsWith("error:"))
